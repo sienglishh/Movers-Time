@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashcards Từ Vựng Tiếng Anh - Time</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #a8edd9 0%, #fed6e3 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #2d3436;
+      margin-bottom: 20px;
+      font-size: 2rem;
+      text-align: center;
+    }
+
+    .card {
+      width: 340px;
+      height: 420px;
+      background: #ffffff;
+      border-radius: 25px;
+      box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+      border: 5px solid #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 30px 20px;
+    }
+
+    .icon {
+      font-size: 5rem;
+      margin-top: 10px;
+    }
+
+    .text-container {
+      text-align: center;
+    }
+
+    .word {
+      font-size: 2.3rem;
+      font-weight: bold;
+      color: #00b894;
+      margin-bottom: 8px;
+    }
+
+    .meaning {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #6c5ce7;
+    }
+
+    .btn-audio {
+      background: #00b894;
+      color: white;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 184, 148, 0.3);
+      transition: transform 0.1s, background 0.2s;
+    }
+
+    .btn-audio:hover {
+      background: #00a884;
+      transform: scale(1.05);
+    }
+
+    .controls {
+      margin-top: 30px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .btn-nav {
+      background: #6c5ce7;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 15px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(108, 92, 231, 0.3);
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-nav:hover {
+      background: #5b4bc4;
+      transform: scale(1.05);
+    }
+
+    .progress {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #2d3436;
+      background: rgba(255,255,255,0.85);
+      padding: 8px 16px;
+      border-radius: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>⏰ Time & Days 📅</h1>
+
+  <div class="card">
+    <div class="icon" id="icon">➡️</div>
+    
+    <div class="text-container">
+      <div class="word" id="word">after</div>
+      <div class="meaning" id="meaning">sau / sau khi</div>
+    </div>
+
+    <button class="btn-audio" onclick="speakCurrentWord()">🔊 Nghe đọc</button>
+  </div>
+
+  <div class="controls">
+    <button class="btn-nav" onclick="prevCard()">◄ Trước</button>
+    <div class="progress" id="progress">1 / 17</div>
+    <button class="btn-nav" onclick="nextCard()">Sau ►</button>
+  </div>
+
+  <script>
+    const vocabulary = [
+      { word: "after", meaning: "sau / sau khi", icon: "➡️" },
+      { word: "always", meaning: "luôn luôn", icon: "🔄" },
+      { word: "before", meaning: "trước / trước khi", icon: "⬅️" },
+      { word: "every", meaning: "mỗi / mọi", icon: "📆" },
+      { word: "never", meaning: "không bao giờ", icon: "🚫" },
+      { word: "o'clock", meaning: "giờ đúng", icon: "🕒" },
+      { word: "sometimes", meaning: "thỉnh thoảng", icon: "🔀" },
+      { word: "week", meaning: "tuần", icon: "🗓️" },
+      { word: "weekend", meaning: "cuối tuần", icon: "🎉" },
+      { word: "yesterday", meaning: "hôm qua", icon: "🔙" },
+      { word: "Monday", meaning: "Thứ Hai", icon: "1️⃣" },
+      { word: "Tuesday", meaning: "Thứ Ba", icon: "2️⃣" },
+      { word: "Wednesday", meaning: "Thứ Tư", icon: "3️⃣" },
+      { word: "Thursday", meaning: "Thứ Năm", icon: "4️⃣" },
+      { word: "Friday", meaning: "Thứ Sáu", icon: "5️⃣" },
+      { word: "Saturday", meaning: "Thứ Bảy", icon: "6️⃣" },
+      { word: "Sunday", meaning: "Chủ Nhật", icon: "7️⃣" }
+    ];
+
+    let currentIndex = 0;
+    const wordElement = document.getElementById('word');
+    const meaningElement = document.getElementById('meaning');
+    const iconElement = document.getElementById('icon');
+    const progressElement = document.getElementById('progress');
+
+    function updateCard() {
+      const item = vocabulary[currentIndex];
+      wordElement.textContent = item.word;
+      meaningElement.textContent = item.meaning;
+      iconElement.textContent = item.icon;
+      progressElement.textContent = `${currentIndex + 1} / ${vocabulary.length}`;
+    }
+
+    function prevCard() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateCard();
+      }
+    }
+
+    function nextCard() {
+      if (currentIndex < vocabulary.length - 1) {
+        currentIndex++;
+        updateCard();
+      }
+    }
+
+    function speakCurrentWord() {
+      const textToSpeak = vocabulary[currentIndex].word;
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.85;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    updateCard();
+  </script>
+</body>
+</html>
